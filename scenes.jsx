@@ -45,7 +45,7 @@ const ROWS = ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5'];
 const PAYMENTS = [
   { section: 'Section 3', rowIndex: 2, amount: 4800,  pct: [25, 25, 50], color: QS_COLORS.purple },
   { section: 'Section 1', rowIndex: 0, amount: 12750, pct: [null, 60, 40], color: QS_COLORS.purple },
-  { section: 'Section 5', rowIndex: 4, amount: 6200,  pct: [5, 10, 90], color: QS_COLORS.purple },
+  { section: 'Section 5', rowIndex: 4, amount: 6200,  pct: [5, 15, 80], color: QS_COLORS.purple },
 ];
 
 const CYCLE_DUR = 11; // seconds per payment
@@ -143,27 +143,27 @@ function InstructionCard({ payment, start, end }) {
             background: QS_COLORS.offWhite,
             border: `1px solid ${QS_COLORS.darkPurple}`,
             borderRadius: 14,
-            padding: '14px 22px 16px',
-            minWidth: 200,
+            padding: '18px 28px 20px',
+            minWidth: 280,
             boxShadow: '0 16px 40px rgba(71,10,104,0.18)',
             fontFamily: QS_FONT, letterSpacing: '-0.01em', textAlign: 'left',
           }}>
             <div style={{
-              fontSize: 11, fontWeight: 500, color: QS_COLORS.purple,
+              fontSize: 16, fontWeight: 500, color: QS_COLORS.purple,
               letterSpacing: '0.16em', textTransform: 'uppercase',
-              display: 'flex', alignItems: 'center', gap: 8,
+              display: 'flex', alignItems: 'center', gap: 10,
             }}>
               <span style={{
-                display: 'inline-block', width: 6, height: 6, borderRadius: 999,
+                display: 'inline-block', width: 9, height: 9, borderRadius: 999,
                 background: QS_COLORS.warmOrange,
               }} />
               Payment instruction
             </div>
-            <div style={{ fontSize: 30, fontWeight: 700, color: QS_COLORS.darkPurple, marginTop: 6 }}>
+            <div style={{ fontSize: 44, fontWeight: 700, color: QS_COLORS.darkPurple, marginTop: 8 }}>
               {fmt(payment.amount)}
             </div>
-            <div style={{ fontSize: 22, fontWeight: 600, color: QS_COLORS.black, marginTop: 6, display: 'flex', alignItems: 'baseline', gap: 6 }}>
-              <span style={{ fontSize: 12, fontWeight: 500, color: QS_COLORS.black, opacity: 0.55, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Ref</span>
+            <div style={{ fontSize: 32, fontWeight: 600, color: QS_COLORS.black, marginTop: 8, display: 'flex', alignItems: 'baseline', gap: 8 }}>
+              <span style={{ fontSize: 16, fontWeight: 500, color: QS_COLORS.black, opacity: 0.55, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Ref</span>
               {payment.section}
             </div>
           </div>
@@ -212,20 +212,20 @@ function LookupLabel({ payment, start, end }) {
             fontFamily: QS_FONT, letterSpacing: '-0.01em',
             background: QS_COLORS.darkPurple,
             color: QS_COLORS.offWhite,
-            padding: '12px 20px',
+            padding: '16px 28px',
             borderRadius: 999,
-            fontSize: 18, fontWeight: 500,
-            display: 'flex', alignItems: 'center', gap: 12,
+            fontSize: 30, fontWeight: 500,
+            display: 'flex', alignItems: 'center', gap: 14,
             whiteSpace: 'nowrap',
             boxShadow: '0 10px 28px rgba(71,10,104,0.32)',
           }}>
             <span style={{
-              width: 12, height: 12, borderRadius: 999,
+              width: 16, height: 16, borderRadius: 999,
               background: QS_COLORS.lightOrange,
               animation: 'qsPulse 1.1s ease-in-out infinite',
               flexShrink: 0,
             }} />
-            <span>Looking up <strong style={{ fontWeight: 700, fontSize: 22, marginLeft: 4 }}>{payment.section}</strong></span>
+            <span>Looking up <strong style={{ fontWeight: 700, fontSize: 34, marginLeft: 6 }}>{payment.section}</strong></span>
           </div>
         );
       }}
@@ -368,9 +368,9 @@ function PercentTravel({ payment, start, end }) {
                   color: QS_COLORS.offWhite,
                   fontFamily: QS_FONT,
                   letterSpacing: '-0.01em',
-                  fontSize: 18,
+                  fontSize: 32,
                   fontWeight: 700,
-                  padding: '6px 12px',
+                  padding: '10px 20px',
                   borderRadius: 999,
                   opacity,
                   boxShadow: '0 6px 16px rgba(71,10,104,0.32)',
@@ -405,7 +405,7 @@ function PercentLocked({ payment, start, end }) {
                   left: POS.pctHex[i].x, top: POS.pctHex[i].y,
                   transform: 'translate(-50%, -50%)',
                   fontFamily: QS_FONT, letterSpacing: '-0.01em',
-                  fontSize: v == null ? 28 : 22, fontWeight: 700,
+                  fontSize: v == null ? 40 : 34, fontWeight: 700,
                   color: QS_COLORS.darkPurple,
                   opacity: op * (v == null ? 0.45 : 1),
                   pointerEvents: 'none',
@@ -473,8 +473,8 @@ function MoneyFlow({ payment, start, end }) {
                   background: QS_COLORS.warmOrange,
                   color: QS_COLORS.offWhite,
                   fontFamily: QS_FONT, letterSpacing: '-0.01em',
-                  fontSize: 17, fontWeight: 700,
-                  padding: '7px 14px',
+                  fontSize: 30, fontWeight: 700,
+                  padding: '11px 22px',
                   borderRadius: 999,
                   opacity,
                   boxShadow: '0 8px 18px rgba(241,91,64,0.32)',
@@ -530,17 +530,17 @@ function ClaimantPayout({ payment, start, end }) {
             background: QS_COLORS.darkPurple,
             color: QS_COLORS.offWhite,
             fontFamily: QS_FONT, letterSpacing: '-0.01em',
-            fontSize: 22, fontWeight: 700,
-            padding: '12px 22px',
+            fontSize: 36, fontWeight: 700,
+            padding: '16px 30px',
             borderRadius: 999,
             opacity,
             boxShadow: '0 14px 30px rgba(71,10,104,0.36)',
             whiteSpace: 'nowrap',
             pointerEvents: 'none',
-            display: 'flex', alignItems: 'center', gap: 10,
+            display: 'flex', alignItems: 'center', gap: 14,
           }}>
             <span style={{
-              width: 10, height: 10, borderRadius: 999,
+              width: 14, height: 14, borderRadius: 999,
               background: QS_COLORS.lightOrange,
             }} />
             {fmt(payment.amount)}
@@ -593,15 +593,15 @@ function SuccessSign({ start, end }) {
             display: 'flex', alignItems: 'center', gap: 12,
             background: '#1F8A5B',
             color: QS_COLORS.offWhite,
-            padding: '12px 22px 12px 16px',
+            padding: '16px 30px 16px 22px',
             borderRadius: 999,
             fontFamily: QS_FONT, letterSpacing: '-0.01em',
-            fontSize: 22, fontWeight: 600,
+            fontSize: 32, fontWeight: 600,
             boxShadow: '0 14px 30px rgba(31,138,91,0.36)',
             pointerEvents: 'none',
             whiteSpace: 'nowrap',
           }}>
-            <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+            <svg width="36" height="36" viewBox="0 0 26 26" fill="none" aria-hidden="true">
               <circle cx="13" cy="13" r="13" fill="rgba(255,255,255,0.18)"/>
               <path d="M7 13.5 L11 17.5 L19 8.5" stroke="#fff" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
             </svg>
