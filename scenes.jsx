@@ -1,5 +1,5 @@
 // scenes.jsx — Quota-share payment flow animation
-// 3 consecutive payments using the diagram in assets/quota-share.png as backdrop.
+// 3 consecutive payments using the diagram quota-share.png as backdrop.
 
 // ─── Brand tokens ───────────────────────────────────────────────────────────
 const QS_COLORS = {
@@ -70,7 +70,7 @@ function envelope(p, fadeIn = 0.08, fadeOut = 0.1) {
 function Backdrop() {
   return (
     <img
-      src="assets/quota-share_v2.png"
+      src="quota-share.png"
       alt=""
       draggable="false"
       style={{
