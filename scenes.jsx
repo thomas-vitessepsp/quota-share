@@ -70,7 +70,7 @@ function envelope(p, fadeIn = 0.08, fadeOut = 0.1) {
 function Backdrop() {
   return (
     <img
-      src="assets/quota-share_v2.png"
+      src="quota-share.png"
       alt=""
       draggable="false"
       style={{
