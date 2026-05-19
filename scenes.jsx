@@ -1,5 +1,5 @@
 // scenes.jsx — Quota-share payment flow animation
-// 3 consecutive payments using the diagram quota-share.png as backdrop.
+// 3 consecutive payments using the diagram in assets/quota-share.png as backdrop.
 
 // ─── Brand tokens ───────────────────────────────────────────────────────────
 const QS_COLORS = {
@@ -21,7 +21,7 @@ const QS_FONT = "'Be Vietnam Pro', system-ui, sans-serif";
 const POS = {
   carrier:   [{x: 185, y: 205}, {x: 684, y: 205}, {x: 1163, y: 205}],
   funding:   [{x: 200, y: 486}, {x: 686, y: 486}, {x: 1163, y: 486}],
-  pctHex:    [{x: 318, y: 753}, {x: 686, y: 753}, {x: 1056, y: 753}],
+  pctHex:    [{x: 295, y: 774}, {x: 688, y: 774}, {x: 1070, y: 774}],
   tpa:       {x: 172, y: 1071},
   tpaTail:   {x: 490, y: 1071},  // where TPA arrow points
   payment:   {x: 686, y: 1089},
@@ -70,7 +70,7 @@ function envelope(p, fadeIn = 0.08, fadeOut = 0.1) {
 function Backdrop() {
   return (
     <img
-      src="quota-share.png"
+      src="assets/quota-share_v2.png"
       alt=""
       draggable="false"
       style={{
