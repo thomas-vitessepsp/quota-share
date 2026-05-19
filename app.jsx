@@ -21,6 +21,7 @@ function App() {
         duration={TOTAL_DUR}
         background="#FFFFFF"
         persistKey="qs-flow"
+        hideControls={true}
       >
         {/* Inset content panel — padding gives the diagram breathing room from the stage edges */}
         <div style={{

@@ -329,7 +329,7 @@ function Stage({
   loop = true,
   autoplay = true,
   persistKey = 'animstage',
-  hideControls = true,
+  hideControls = false,
   children,
 }) {
   const [time, setTime] = React.useState(() => {
