@@ -111,24 +111,30 @@ function InstructionCard({ payment, start, end }) {
   return (
     <Sprite start={start} end={end}>
       {({ progress }) => {
-        // Phase 1 (0→0.15): pop in at TPA
-        // Phase 2 (0.15→0.85): travel from TPA to Payment Account along arrow
-        // Phase 3 (0.85→1): absorb into Payment Account
+        // Phase 1 (0→0.06): pop in at TPA
+        // Phase 2 (0.06→0.28): travel TPA → Payment Account
+        // Phase 3 (0.28→0.88): parked at Payment Account, waiting for funds
+        // Phase 4 (0.88→1): absorb / fade as funds arrive
         let x, y, scale, opacity;
-        if (progress < 0.15) {
-          const t = Easing.easeOutBack(progress / 0.15);
+        if (progress < 0.06) {
+          const t = Easing.easeOutBack(progress / 0.06);
           x = POS.tpa.x + 70;
           y = POS.tpa.y - 90;
           scale = 0.4 + 0.6 * t;
           opacity = t;
-        } else if (progress < 0.85) {
-          const t = Easing.easeInOutCubic((progress - 0.15) / 0.70);
+        } else if (progress < 0.28) {
+          const t = Easing.easeInOutCubic((progress - 0.06) / 0.22);
           x = lerp(POS.tpa.x + 70, POS.payment.x, t);
           y = lerp(POS.tpa.y - 90, POS.payment.y - 90, t);
           scale = 1;
           opacity = 1;
+        } else if (progress < 0.88) {
+          x = POS.payment.x;
+          y = POS.payment.y - 90;
+          scale = 1;
+          opacity = 1;
         } else {
-          const t = (progress - 0.85) / 0.15;
+          const t = (progress - 0.88) / 0.12;
           x = POS.payment.x;
           y = lerp(POS.payment.y - 90, POS.payment.y - 30, Easing.easeInQuad(t));
           scale = 1 - 0.4 * t;
@@ -638,8 +644,8 @@ function PaymentCycle({ payment, index, baseStart }) {
         <CycleBadge index={index} payment={payment} />
       </Sprite>
 
-      {/* 0.3 → 2.2 : instruction card travels TPA → Payment Account */}
-      <InstructionCard payment={payment} start={T(0.3)} end={T(2.2)} />
+      {/* 0.3 → 8.0 : instruction card travels TPA → Payment Account, sits there until funds arrive */}
+      <InstructionCard payment={payment} start={T(0.3)} end={T(8.0)} />
 
       {/* 2.0 → 2.9 : payment account absorbs the instruction */}
       <PaymentPulse start={T(2.05)} end={T(2.85)} />
