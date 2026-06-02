@@ -43,10 +43,23 @@ const ROWS = ['Section 1', 'Section 2', 'Section 3', 'Section 4', 'Section 5'];
 // ─── Payment scenarios ──────────────────────────────────────────────────────
 // 3 consecutive payments. Each picks a row in the table (1–5) and an amount.
 const PAYMENTS = [
-  { section: 'Section 3', rowIndex: 2, amount: 4800,  pct: [25, 25, 50], color: QS_COLORS.purple },
-  { section: 'Section 1', rowIndex: 0, amount: 12750, pct: [null, 60, 40], color: QS_COLORS.purple },
-  { section: 'Section 5', rowIndex: 4, amount: 6200,  pct: [5, 15, 80], color: QS_COLORS.purple },
+  { section: 'Section 3', rowIndex: 2, amount: 4800,  pct: [25, 25, 50], payCcy: 'USD', color: QS_COLORS.purple },
+  { section: 'Section 1', rowIndex: 0, amount: 12750, pct: [null, 60, 40], payCcy: 'GBP', color: QS_COLORS.purple },
+  { section: 'Section 5', rowIndex: 4, amount: 6200,  pct: [5, 15, 80], payCcy: 'EUR', color: QS_COLORS.purple },
 ];
+
+// ─── Currency model ─────────────────────────────────────────────────────────
+// Funding accounts (Carrier 1/2/3) each hold a native currency.
+const ACCOUNT_CCY = ['USD', 'GBP', 'EUR'];
+const CCY_SYMBOL  = { USD: '$', GBP: '£', EUR: '€' };
+// Value of 1 unit expressed in GBP:  $1 = £0.75,  1€ = £0.85,  £1 = £1.
+const GBP_VALUE   = { USD: 0.75, GBP: 1, EUR: 0.85 };
+
+// Convert an amount from one currency to another via the GBP base.
+function convert(amount, from, to) {
+  if (from === to) return amount;
+  return amount * (GBP_VALUE[from] / GBP_VALUE[to]);
+}
 
 const CYCLE_DUR = 11; // seconds per payment
 const INTRO_DUR = 0.6;
@@ -54,6 +67,16 @@ const OUTRO_DUR = 1.0;
 const TOTAL_DUR = INTRO_DUR + PAYMENTS.length * CYCLE_DUR + OUTRO_DUR;
 
 const fmt = (n) => '$' + n.toLocaleString('en-US');
+
+// Currency-aware formatter: prepends the right symbol, shows up to 2 decimals.
+function fmtCcy(n, ccy) {
+  const sym = CCY_SYMBOL[ccy] || '';
+  const r = Math.round(n * 100) / 100;
+  const str = Number.isInteger(r)
+    ? r.toLocaleString('en-US')
+    : r.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  return sym + str;
+}
 
 // ─── Helpers ───────────────────────────────────────────────────────────────
 const lerp = (a, b, t) => a + (b - a) * t;
@@ -97,7 +120,7 @@ function CycleBadge({ index, payment }) {
         Payment
       </div>
       <div style={{ fontSize: 36, color: QS_COLORS.darkPurple, fontWeight: 700, marginTop: 6, lineHeight: 1 }}>
-        {fmt(payment.amount)}
+        {fmtCcy(payment.amount, payment.payCcy)}
       </div>
       <div style={{ fontSize: 20, color: QS_COLORS.black, fontWeight: 500, marginTop: 6, opacity: 0.8 }}>
         Ref: <span style={{ fontWeight: 600, opacity: 1, color: QS_COLORS.black }}>{payment.section}</span>
@@ -166,7 +189,7 @@ function InstructionCard({ payment, start, end }) {
               Payment instruction
             </div>
             <div style={{ fontSize: 44, fontWeight: 700, color: QS_COLORS.darkPurple, marginTop: 8 }}>
-              {fmt(payment.amount)}
+              {fmtCcy(payment.amount, payment.payCcy)}
             </div>
             <div style={{ fontSize: 32, fontWeight: 600, color: QS_COLORS.black, marginTop: 8, display: 'flex', alignItems: 'baseline', gap: 8 }}>
               <span style={{ fontSize: 16, fontWeight: 500, color: QS_COLORS.black, opacity: 0.55, letterSpacing: '0.04em', textTransform: 'uppercase' }}>Ref</span>
@@ -434,7 +457,11 @@ function MoneyFlow({ payment, start, end }) {
       {[0, 1, 2].map((i) => {
         const v = payment.pct[i];
         if (v == null || v === 0) return null;
-        const amount = Math.round(payment.amount * v / 100);
+        // Contribution is a % of the payment (in the payment currency), but the
+        // funds are DRAWN from each funding account in that account's currency.
+        const accCcy = ACCOUNT_CCY[i];
+        const contribPay = payment.amount * v / 100;
+        const drawn = convert(contribPay, payment.payCcy, accCcy);
         const offset = i * 0.10;
         return (
           <Sprite key={i} start={start + offset} end={end}>
@@ -487,7 +514,7 @@ function MoneyFlow({ payment, start, end }) {
                   whiteSpace: 'nowrap',
                   pointerEvents: 'none',
                 }}>
-                  {fmt(amount)}
+                  {fmtCcy(drawn, accCcy)}
                 </div>
               );
             }}
@@ -549,7 +576,7 @@ function ClaimantPayout({ payment, start, end }) {
               width: 14, height: 14, borderRadius: 999,
               background: QS_COLORS.lightOrange,
             }} />
-            {fmt(payment.amount)}
+            {fmtCcy(payment.amount, payment.payCcy)}
           </div>
         );
       }}
@@ -592,9 +619,9 @@ function SuccessSign({ start, end }) {
         return (
           <div style={{
             position: 'absolute',
-            left: POS.claimant.x + 280, top: POS.claimant.y,
-            transform: `translate(-50%, -50%) scale(${scale})`,
-            transformOrigin: 'center',
+            left: POS.claimant.x + 330, top: POS.claimant.y,
+            transform: `translate(0, -50%) scale(${scale})`,
+            transformOrigin: 'left center',
             opacity: op,
             display: 'flex', alignItems: 'center', gap: 12,
             background: '#1F8A5B',
@@ -715,6 +742,11 @@ function IntroTitle({ start, end }) {
 }
 
 Object.assign(window, {
-  QS_COLORS, QS_FONT, POS, PAYMENTS, CYCLE_DUR, INTRO_DUR, OUTRO_DUR, TOTAL_DUR,
+  QS_COLORS, QS_FONT, POS, ROWS, PAYMENTS, CYCLE_DUR, INTRO_DUR, OUTRO_DUR, TOTAL_DUR,
+  fmt, fmtCcy, convert, ACCOUNT_CCY, CCY_SYMBOL, GBP_VALUE, lerp, envelope,
   Backdrop, PaymentCycle, TimestampTagger, IntroTitle,
+  // Sub-component primitives (used by v2 cinematic cycle)
+  CycleBadge, InstructionCard, PaymentPulse, LookupLabel,
+  TableScan, RowHighlight, PercentTravel, PercentLocked,
+  MoneyFlow, ClaimantPayout, PaidPing, SuccessSign,
 });
