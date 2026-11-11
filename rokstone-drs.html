@@ -2901,6 +2901,9 @@ Object.assign(window, {
   V3_TOTAL
 });
 ;
+try {
+  localStorage.removeItem('qs-flow-v3:t');
+} catch (e) {}
 function AppV3() {
   const rootRef = React.useRef(null);
   return React.createElement("div", {
